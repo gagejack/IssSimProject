@@ -1,0 +1,30 @@
+package mainPackage;
+
+import java.io.IOException;
+
+import javax.swing.JFrame;
+import javax.swing.JLayeredPane;
+
+public class UserCreationWindow {
+
+	private JFrame createFrame;
+	private JLayeredPane createLayeredPane;
+	
+	private int createWidth = 400;
+	private int createHeight = 300;
+	
+	// ------------------------------------- User Creation Window Window -------------------------------------
+
+	
+			public void openCreateWindow() throws IOException {
+				createFrame = new JFrame();
+				createFrame.setSize(createWidth,createHeight);
+				createFrame.setLocationRelativeTo(null);
+				createFrame.setLayout(null);
+				
+				createLayeredPane.setBounds(0, 0, createWidth, createHeight);
+				createFrame.add(createLayeredPane);
+				createFrame.setResizable(false);
+				createFrame.setVisible(true);
+				}
+}

@@ -1,0 +1,154 @@
+package mainPackage;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+public class LoginUserWindow {
+	
+	SimWindow simObj = new SimWindow();
+	SelectionWindow select = new SelectionWindow();
+
+	private JFrame loginFrame;
+	private JLayeredPane createLayeredPane;
+	
+	private int createWidth = 400;
+	private int createHeight = 275;
+	private int createButtonX = 75;
+	private int createButtonY = 190;
+	
+	private int backButtonX = 250;
+	private int backButtonY = 190;
+	private int backButtonWidth = 75;
+	private int backButtonHeight = 25;
+	
+	private int userTextFieldX = 50;
+	private int userTextFieldY = 50+ 20;
+	private int passTextFieldX = 50;
+	private int passTextFieldY = 120+ 20;
+	private int userLabelX = 50;
+	private int userLabelY = 20 + 20;
+	private int passwordLabelX = 50;
+	private int passwordLabelY = 90+ 20;
+	
+	private JLabel userLabel;
+	private JTextField userText;
+	
+	private JLabel passLabel;
+	private JTextField passText;
+	
+	private JButton loginUserButton = new JButton();
+	private JButton backButton = new JButton();
+	
+	
+	public void openLoginWindow() throws IOException {
+		loginFrame = new JFrame("Login");
+		loginFrame.setSize(createWidth,createHeight);
+		loginFrame.setLocationRelativeTo(null);
+		loginFrame.setLayout(null);
+		
+		createLayeredPane = new JLayeredPane();
+		createLayeredPane.setBounds(0, 0, createWidth, createHeight);
+		loginFrame.add(createLayeredPane);
+		loginFrame.setResizable(false);
+		loginFrame.setVisible(true);
+		
+		setupUserStuff();
+		setupPassStuff();
+		
+		
+		simObj.displayLoginBackground(createLayeredPane,createWidth,createHeight);
+	        
+		initializeLoginUserButton();
+		initializeBackButton();
+		
+		setupButtonListeners();
+		}
+	
+	public void setupUserStuff() {
+		userLabel = new JLabel("Username: ");
+        userLabel.setForeground(Color.WHITE);
+        userLabel.setBounds(userLabelX,userLabelY,80,25);
+        createLayeredPane.add(userLabel, Integer.valueOf(2));
+        
+		userText = new JTextField();
+	    userText.setBounds(userTextFieldX,userTextFieldY,200,25);
+	    createLayeredPane.add(userText,Integer.valueOf(2));
+	}
+	
+	public void setupPassStuff() {
+		passLabel = new JLabel("Password: ");
+        passLabel.setForeground(Color.WHITE);
+        passLabel.setBounds(passwordLabelX,passwordLabelY,80,25);
+        createLayeredPane.add(passLabel,Integer.valueOf(2));
+        
+		passText = new JPasswordField();
+        passText.setBounds(passTextFieldX,passTextFieldY,200,25);
+        createLayeredPane.add(passText,Integer.valueOf(2));
+	}
+	
+	public void setupButtonListeners() {
+		ActionListener buttonListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				Object o = ae.getSource();
+				
+				if(o == loginUserButton) {
+					try {
+						simObj.openSimWindow();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					System.out.println("Login Button");
+					String user = userText.getText();
+	                String pass = new String(passText.getText());
+	                
+	                UserInfo userInfo = new UserInfo();
+	                if(userInfo.verifyCreds(user, pass)) {
+	                    JOptionPane.showMessageDialog(loginFrame, "User " + user + " logged in successfully!");
+	                    try { // Successful login - open main window  
+							simObj.openSimWindow();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}                 
+	                    System.out.println("Opening main window");
+	                    loginFrame.dispose();
+	                } else {
+	                    JOptionPane.showMessageDialog(loginFrame, "User " + user + " failed to login");
+	                }
+	                
+				} else if(o == backButton) {
+					loginFrame.dispose();
+					select.openSelectionWindow();
+				}
+			}
+		};
+		
+		loginUserButton.addActionListener(buttonListener);
+		backButton.addActionListener(buttonListener);
+	}
+	
+	public void initializeLoginUserButton() {
+		loginUserButton = new JButton("Login User");
+        loginUserButton.setBounds(createButtonX, createButtonY, 150, 25);
+        createLayeredPane.add(loginUserButton,Integer.valueOf(2));
+	}
+	
+	public void initializeBackButton() {
+		backButton = new JButton("Back");
+        backButton.setBounds(backButtonX, backButtonY, backButtonWidth, backButtonHeight);
+        createLayeredPane.add(backButton,Integer.valueOf(2));
+	}
+}

@@ -1,0 +1,143 @@
+package mainPackage;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+public class LoginWindow {
+
+	GUIControl GUI = new GUIControl();
+	
+	private int offset = 50;
+	
+	private int loginWidth = 300;
+	private int loginHeight = 250;
+	private int loginTitleLabelX = 100;
+	private int loginTitleLabelY = 10;
+	
+	private int createButtonX = 75;
+	private int createButtonY = 200;
+	private int loginButtonX = 110;
+	private int loginButtonY = 160;
+	private int cancelButtonX = 110;
+	private int cancelButtonY = 240;
+	
+	private JLabel loginTitleLabel;
+	private JLabel passLabel;
+	private JTextField passText;
+	private JLabel userLabel;
+	private JTextField userText;
+	
+	private JButton createUserButton;
+	private JButton loginButton;
+	private JButton cancelButton;
+	
+	private JFrame loginFrame;
+	
+	private JLayeredPane loginLayeredPane = new JLayeredPane();
+	
+	public void openLoginWindow() {
+		loginFrame = new JFrame();
+		loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		loginFrame.setSize(loginWidth,loginHeight);
+		loginFrame.setLocationRelativeTo(null);
+		loginFrame.setResizable(false);
+		
+		loginLayeredPane.setBounds(0, 0, loginWidth, loginHeight);
+		loginFrame.add(loginLayeredPane);
+		GUI.displayLoginBackground(loginLayeredPane,loginWidth,loginHeight);
+		
+		loginTitleLabel = new JLabel("ISS SIM");
+		loginTitleLabel.setForeground(Color.WHITE);
+		loginTitleLabel.setBounds(loginTitleLabelX,loginTitleLabelY,80,25);
+        loginLayeredPane.add(loginTitleLabel, Integer.valueOf(2));
+        
+        initializeCreateUserButton();
+        initializeLoginButton();
+        initializeCancelButton();
+        
+        setupButtonListeners();
+
+        loginFrame.setVisible(true);
+	}
+	
+	public void initializeCreateUserButton() {
+		createUserButton = new JButton("Create User");
+        createUserButton.setBounds(createButtonX, createButtonY, 150, 25);
+        loginLayeredPane.add(createUserButton,Integer.valueOf(2));
+	}
+	
+	public void initializeLoginButton() {
+		 loginButton = new JButton("Login");
+	     loginButton.setBounds(loginButtonX, loginButtonY, 80, 25);
+	     loginLayeredPane.add(loginButton,Integer.valueOf(2));
+	}
+	
+	public void initializeCancelButton() {
+		cancelButton = new JButton("Cancel");
+        cancelButton.setBounds(cancelButtonX, cancelButtonY, 80, 25);
+        loginLayeredPane.add(cancelButton,Integer.valueOf(2));
+	}
+	
+	public void showLogin() {
+        loginFrame.setVisible(true); // Explicitly show the window
+    }
+	
+	public void setupButtonListeners() {
+		ActionListener buttonListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				Object o = ae.getSource();
+				
+				if(o == createUserButton) {
+					System.out.println("Create Button");
+					UserCreationWindow UserCreation = new UserCreationWindow();
+					try {
+						UserCreation.openCreateWindow();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	                
+				} else if(o == loginButton) {
+					
+					System.out.println("Login Button");
+					String user = userText.getText();
+	                String pass = new String(passText.getText());
+	                
+	                UserInfo userInfo = new UserInfo();
+	                if(userInfo.checkUser(user, pass)) {
+	                    JOptionPane.showMessageDialog(loginFrame, "User " + user + " logged in successfully!");
+	                    try {
+							GUI.openMainWindow();
+						} catch (IOException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}    // ------------------------------------------------------------------- After successful login, Open the main program window                    
+	                    System.out.println("Opening main window");
+	                    loginFrame.dispose();
+	                } else {
+	                    JOptionPane.showMessageDialog(loginFrame, "User " + user + " failed to login");
+	                }
+				} else if(o == cancelButton) {
+					System.out.println("Hi");
+					 loginFrame.dispose();
+				}
+			}
+		};
+		
+		createUserButton.addActionListener(buttonListener);
+		loginButton.addActionListener(buttonListener);
+		cancelButton.addActionListener(buttonListener);
+	}
+	
+}

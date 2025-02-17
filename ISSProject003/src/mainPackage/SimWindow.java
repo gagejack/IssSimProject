@@ -1,0 +1,95 @@
+package mainPackage;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+import inputs.KeyboardInputs;
+
+public class SimWindow {
+	
+	// ------------------------------------- Main Window Stuff -------------------------------------
+	
+	private int mainWidth = 500;
+	private int mainHeight = 500;
+	
+	private JFrame mainFrame;	
+	JLayeredPane layeredPane = new JLayeredPane();
+	
+	KeyboardInputs keyboardInputs;
+
+	// ------------------------------------- Images -------------------------------------
+	
+
+	int loginBgWidth = 400;  // Adjust background width
+	int loginBgHeight = 400; // Adjust background height
+
+	ImageIcon mainBgIcon = new ImageIcon(
+	        new ImageIcon(new File("src/UI/horizon.png").getAbsolutePath())
+	                .getImage().getScaledInstance(mainWidth, mainHeight, Image.SCALE_SMOOTH));
+	JLabel horizonLabel = new JLabel(mainBgIcon);
+
+	ImageIcon loginBgIcon = new ImageIcon(
+	        new ImageIcon(new File("src/UI/horizon.png").getAbsolutePath())
+	                .getImage().getScaledInstance(loginBgWidth, loginBgHeight, Image.SCALE_SMOOTH));
+	JLabel loginBackgroundLabel = new JLabel(loginBgIcon);
+	
+	ImageIcon rocketIcon = new ImageIcon(new File("src/UI/rocket.png").getAbsolutePath());
+
+
+	
+	
+
+	// ------------------------------------- Main Window -------------------------------------
+
+	
+	public void openSimWindow() throws IOException {
+		
+		keyboardInputs = new KeyboardInputs(this);
+		
+		mainFrame = new JFrame();
+		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		mainFrame.setSize(mainWidth,mainHeight);
+		mainFrame.setLocationRelativeTo(null);
+		mainFrame.setLayout(null);
+		mainFrame.setIconImage(rocketIcon.getImage());
+
+		layeredPane.setBounds(0, 0, 500, 500);
+		mainFrame.add(layeredPane);
+		
+		displayBG(layeredPane);
+		
+		mainFrame.addKeyListener(keyboardInputs);
+		mainFrame.setFocusable(true);
+		mainFrame.requestFocus();	
+
+		
+		mainFrame.setVisible(true);
+		}
+	
+	
+		
+	// ------------------------------------- Display Images Methods -------------------------------------
+
+	public void displayBG(JLayeredPane pane) {
+		ImageIcon mainBgIcon = new ImageIcon(
+		        new ImageIcon(new File("src/UI/horizon.png").getAbsolutePath())
+		                .getImage().getScaledInstance(pane.getWidth(), pane.getHeight(), Image.SCALE_SMOOTH));
+		JLabel horizonLabel = new JLabel(mainBgIcon);
+	    horizonLabel.setBounds(0,0,pane.getWidth(),pane.getHeight());
+	    pane.add(horizonLabel, Integer.valueOf(1)); // Add to the background layer
+
+	}
+	
+}
+	

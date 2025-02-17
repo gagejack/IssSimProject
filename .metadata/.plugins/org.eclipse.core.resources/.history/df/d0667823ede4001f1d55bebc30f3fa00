@@ -1,0 +1,82 @@
+package mainPackage;
+
+import java.awt.Color;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
+public class LoginWindow {
+
+	GUIControl GUI = new GUIControl();
+	
+	private int loginWidth = 300;
+	private int loginHeight = 350;
+	private int loginTitleLabelX = 100;
+	private int loginTitleLabelY = 10;
+	private int userLabelX = 50;
+	private int userLabelY = 20 + 20;
+	private int userTextFieldX = 50;
+	private int userTextFieldY = 50+ 20;
+	private int passwordLabelX = 50;
+	private int passwordLabelY = 90+ 20;
+	private int passTextFieldX = 50;
+	private int passTextFieldY = 120+ 20;
+	
+	private JLabel loginTitleLabel;
+	private JLabel passLabel;
+	private JTextField passText;
+	private JLabel userLabel;
+	private JTextField userText;
+	
+	private JFrame loginFrame = new JFrame();
+	private JLayeredPane loginLayeredPane = new JLayeredPane();
+	
+	public void openLoginWindow() {
+		loginFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		loginFrame.setSize(loginWidth,loginHeight);
+		loginFrame.setLocationRelativeTo(null);
+		loginFrame.setResizable(false);
+		
+		loginLayeredPane.setBounds(0, 0, loginWidth, loginHeight);
+		loginFrame.add(loginLayeredPane);
+		GUI.displayLoginBackground(loginLayeredPane,loginWidth,loginHeight);
+		
+		/*
+		loginPanel = new JPanel();
+		loginFrame.add(loginPanel);
+		loginPanel.setLayout(null);
+		loginPanel.setVisible(true);
+		*/
+		
+		loginTitleLabel = new JLabel("ISS SIM");
+		loginTitleLabel.setForeground(Color.WHITE);
+		loginTitleLabel.setBounds(loginTitleLabelX,loginTitleLabelY,80,25);
+        loginLayeredPane.add(loginTitleLabel, Integer.valueOf(2));
+        
+		userLabel = new JLabel("Username: ");
+        userLabel.setForeground(Color.WHITE);
+        userLabel.setBounds(userLabelX,userLabelY,80,25);
+        loginLayeredPane.add(userLabel, Integer.valueOf(2));
+        
+        userText = new JTextField();
+        userText.setBounds(userTextFieldX,userTextFieldY,200,25);
+        loginLayeredPane.add(userText,Integer.valueOf(2));
+        
+        passLabel = new JLabel("Password: ");
+        passLabel.setForeground(Color.WHITE);
+        passLabel.setBounds(passwordLabelX,passwordLabelY,80,25);
+        loginLayeredPane.add(passLabel,Integer.valueOf(2));
+        
+        passText = new JPasswordField();
+        passText.setBounds(passTextFieldX,passTextFieldY,200,25);
+        loginLayeredPane.add(passText,Integer.valueOf(2));
+	}
+	
+	public void showLogin() {
+        loginFrame.setVisible(true); // Explicitly show the window
+    }
+	
+}
