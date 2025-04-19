@@ -4,6 +4,8 @@
 	<section name="java.lang.Class">
 		<item key="replaceBarOpen" value="false"/>
 		<list key="findhistory">
+			<item value="displayBG"/>
+			<item value="layout"/>
 			<item value="color"/>
 		</list>
 	</section>

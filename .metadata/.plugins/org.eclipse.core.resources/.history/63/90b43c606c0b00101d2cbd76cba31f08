@@ -1,0 +1,285 @@
+package mainPackage;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.Random;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+import inputs.KeyboardInputs;
+
+public class SimWindow {
+	
+	// ------------------------------------- Main Window Stuff -------------------------------------
+	
+	private static final int SIM_WIDTH = 700;
+	private static final int SIM_HEIGHT = 700;
+	private static final int PANEL_WIDTH = 500;
+	private static final int PANEL_HEIGHT = 500;
+	
+	private JFrame simFrame;	
+	JLayeredPane layeredPane;
+	JPanel panel;
+	
+	KeyboardInputs keyboardInputs;
+
+	private JButton startButton;
+	private JButton upButton, downButton, leftButton, rightButton;
+	
+	private static int distance, xOffset, yOffset;
+	
+	
+
+	// ------------------------------------- Main Window -------------------------------------
+
+	
+	public void openSimWindow() throws IOException {
+		
+		keyboardInputs = new KeyboardInputs(this);
+		initFrame(getSimWidth(), SIM_HEIGHT);
+		initLayeredPane(getSimWidth(), SIM_HEIGHT);
+		displayBG(layeredPane, getSimWidth(), SIM_HEIGHT);
+		initLayout();
+//		simFrame.addKeyListener(keyboardInputs);
+		addStartButton();
+		
+		simFrame.setFocusable(true);
+		simFrame.requestFocus();	
+		simFrame.setVisible(true);
+		setupButtonListeners();
+	}
+	
+	private void initFrame(int width, int height) {
+		simFrame = new JFrame();
+		simFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		simFrame.setSize(width,height);
+		simFrame.setLocationRelativeTo(null);
+		simFrame.setIconImage(rocketIcon.getImage());
+	}
+	
+	private void initLayeredPane(int width, int height) {
+		layeredPane = new JLayeredPane();
+		layeredPane.setBounds(0, 0, width, height);
+		simFrame.setContentPane(layeredPane);
+		simFrame.setResizable(false);
+		simFrame.setVisible(true);
+		
+	}
+
+	private int rng(int low, int high) {
+		Random random = new Random();
+		int rng = low + random.nextInt(high - low);
+		return rng;
+	}
+
+	private void startSim() {
+		System.out.println("Sim Started");
+		
+		setDistance(rng(100, 250));
+		setxOffset(rng(-20,20));
+		setyOffset(rng(-15,15));
+		
+		System.out.println("Distance : " + getDistance());
+		System.out.println("X Offset : " + getxOffset());
+		System.out.println("Y Offset : " + getyOffset());
+	
+	}
+
+	private void upAction() {
+		System.out.println("UP");
+		setyOffset(-1);
+	}
+	
+	private void downAction() {
+		System.out.println("DOWN");
+		yOffset = yOffset - 1;
+	}
+	
+	private void leftAction() {
+		System.out.println("LEFT");
+		xOffset = xOffset - 1;
+
+	}
+	
+	private void rightAction() {
+		System.out.println("RIGHT");
+
+	}
+	private void addStartButton() {
+		startButton = new JButton("Start");
+		startButton.setBounds(30, getSimWidth() - 120, 100, 50);
+		layeredPane.add(startButton,Integer.valueOf(2));
+		
+	}
+
+	
+	
+	public void setupButtonListeners() {
+		ActionListener buttonListener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				Object o = ae.getSource();
+				
+				if(o == startButton) {
+					startSim();
+					StatsWindow Stats = new StatsWindow();
+					try {
+						Stats.openStatsWindow();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	             
+				}else if(o == upButton) {
+					upAction();
+					decDistance();
+				} else if(o == downButton) {
+					downAction();
+					decDistance();
+				} else if(o == leftButton) {
+					leftAction();
+					decDistance();
+				} else if(o == rightButton) {
+					rightAction();
+					decDistance();
+				}
+			}
+
+			private void decDistance() {
+				setDistance(-10);
+			}
+		};
+		
+		startButton.addActionListener(buttonListener);
+		upButton.addActionListener(buttonListener);
+		downButton.addActionListener(buttonListener);
+		leftButton.addActionListener(buttonListener);
+		rightButton.addActionListener(buttonListener);
+
+
+	
+	}
+	
+	private void initLayout() {
+		panel = new JPanel(new GridBagLayout());
+		
+		upButton = new JButton("^");
+		downButton = new JButton("v");
+		leftButton = new JButton("<");
+		rightButton = new JButton(">");
+		
+		    
+		GridBagConstraints gbc = new GridBagConstraints();
+		
+		gbc.insets = new Insets(5, 5, 5, 5); // Padding
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+
+		// Layout for up
+	    gbc.gridx = 1;
+	    gbc.gridy = 0;
+	    gbc.weightx = 0; 
+	    gbc.gridheight = 1;
+	    panel.add(upButton, gbc);
+	    // Layout for down
+	    gbc.gridx = 1;
+	    gbc.gridy = 2;
+	    gbc.weightx = 0; 
+	    gbc.gridheight = 1;
+	    panel.add(downButton, gbc);
+
+	    // Layout for left
+	    gbc.gridx = 0;
+	    gbc.gridy = 1;
+	    gbc.weightx = 0; 
+	    gbc.gridheight = 1;
+	    panel.add(leftButton, gbc);
+	    // Layout for right
+	    gbc.gridx = 2;
+	    gbc.gridy = 1;
+	    gbc.weightx = 0; 
+	    gbc.gridheight = 1;
+	    panel.add(rightButton, gbc);
+		
+		panel.setOpaque(false);
+		panel.setBounds((getSimWidth() - PANEL_WIDTH) / 2, SIM_HEIGHT / 2, PANEL_WIDTH, PANEL_HEIGHT);
+		layeredPane.add(panel, Integer.valueOf(2));
+
+	}
+	
+	public int  getSIM_WIDTH() {
+		return getSimWidth();
+	}
+	
+	
+	
+	
+	
+	
+	// ------------------------------------- Images -------------------------------------
+	
+	ImageIcon mainBgIcon = new ImageIcon(
+	        new ImageIcon(new File("src/UI/horizon.png").getAbsolutePath())
+	                .getImage().getScaledInstance(getSimWidth(), SIM_HEIGHT, Image.SCALE_SMOOTH));
+	JLabel horizonLabel = new JLabel(mainBgIcon);
+
+//	ImageIcon loginBgIcon = new ImageIcon(
+//	        new ImageIcon(new File("src/UI/horizon.png").getAbsolutePath())
+//	                .getImage().getScaledInstance(loginBgWidth, loginBgHeight, Image.SCALE_SMOOTH));
+//	JLabel loginBackgroundLabel = new JLabel(loginBgIcon);
+	
+	ImageIcon rocketIcon = new ImageIcon(new File("src/UI/rocket.png").getAbsolutePath());
+	
+	// ------------------------------------- Display Images Methods -------------------------------------
+
+	public void displayBG(JLayeredPane pane, int width, int height) {
+		ImageIcon mainBgIcon = new ImageIcon(
+		        new ImageIcon(new File("src/UI/horizon.png").getAbsolutePath())
+		                .getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH));
+		JLabel horizonLabel = new JLabel(mainBgIcon);
+	    horizonLabel.setBounds(0,0,width,height);
+	    pane.add(horizonLabel, Integer.valueOf(1)); // Add to the background layer
+	}
+
+	public static int getSimWidth() {
+		return SIM_WIDTH;
+	}
+
+	public static int getyOffset() {
+		return yOffset;
+	}
+
+	public void setyOffset(int yOffset) {
+		this.yOffset = yOffset;
+	}
+
+	public static int getxOffset() {
+		return xOffset;
+	}
+
+	public void setxOffset(int xOffset) {
+		this.xOffset = xOffset;
+	}
+
+	public static int getDistance() {
+		return distance;
+	}
+
+	public static void setDistance(int distance) {
+		SimWindow.distance = distance;
+	}
+	
+}
+	

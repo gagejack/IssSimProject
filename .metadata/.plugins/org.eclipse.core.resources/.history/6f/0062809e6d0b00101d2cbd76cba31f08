@@ -1,0 +1,87 @@
+package mainPackage;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+
+
+public class StatsWindow {
+
+	private static final int STATS_WIDTH = 400;
+	private static final int STATS_HEIGHT = 250;
+	private static final int PANEL_WIDTH = 100;
+	private static final int PANEL_HEIGHT = 150;
+	private int screenHeight = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
+	private int screenWidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
+
+	private JFrame statsFrame;	
+	
+	private SimWindow Sim = new SimWindow();
+	
+	private int windowY = (screenHeight - STATS_HEIGHT) / 2;
+	private int windowX = (screenWidth - SimWindow.getSimWidth()) / 2 - STATS_WIDTH;
+
+	JLayeredPane layeredPane;
+	JPanel panel;
+	JLabel xOffsetLabel, yOffsetLabel, distanceLabel;
+	
+	private int distance, xOffset, yOffset;
+	
+	
+public void openStatsWindow() throws IOException {
+		
+		initFrame(STATS_WIDTH, STATS_HEIGHT, windowX, windowY);
+		initLayout();	
+		statsFrame.setVisible(true);
+		statsFrame.setResizable(false);
+		SimWindow Sim = new SimWindow();
+	}
+
+private void initFrame(int width, int height, int x, int y) {
+	statsFrame = new JFrame();
+	statsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	statsFrame.setSize(width,height);
+	statsFrame.setLocation(x, y);
+}
+
+private void initLayout() {
+	panel = new JPanel(new GridBagLayout());
+	GridBagConstraints gbc = new GridBagConstraints();
+	gbc.insets = new Insets(5, 5, 5, 5);
+	gbc.fill = GridBagConstraints.HORIZONTAL;
+	gbc.gridx = 0; // align to first column
+	gbc.weightx = 1;
+
+	// Line 1
+	gbc.gridy = 0;
+	panel.add(new JLabel("X Offset: " + SimWindow.getxOffset()), gbc);
+
+	// Line 2
+	gbc.gridy = 1;
+	panel.add(new JLabel("Y Offset: " + SimWindow.getyOffset()), gbc);
+
+	// Line 3
+	gbc.gridy = 2;
+	panel.add(new JLabel("Distance: " + SimWindow.getDistance()), gbc);
+
+	panel.setOpaque(false);
+	panel.setBounds((STATS_WIDTH - PANEL_WIDTH) / 2, STATS_HEIGHT / 4, PANEL_WIDTH, PANEL_HEIGHT);
+	statsFrame.add(panel);
+	
+	updateStats();
+}
+
+public void updateStats() {
+	xOffsetLabel.setText("X Offset: " + SimWindow.getxOffset());
+	yOffsetLabel.setText("Y Offset: " + SimWindow.getyOffset());
+	distanceLabel.setText("Distance: " + SimWindow.getDistance());
+}
+	
+}

@@ -1,0 +1,151 @@
+package mainPackage;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+
+public class SelectionWindow {
+
+    private SimWindow simObj = new SimWindow();
+    
+    private static final int LOGIN_WIDTH = 300;
+    private static final int LOGIN_HEIGHT = 250;
+    
+    private static final int PANEL_WIDTH = 150;
+    private static final int PANEL_HEIGHT = 100;
+
+    private JLabel loginTitleLabel;
+    private JButton createUserButton;
+    private JButton loginButton;
+    private JButton cancelButton;
+
+    private JFrame selectFrame;
+    private JLayeredPane layeredPane;
+    private JPanel buttonPanel;
+
+    public void openSelectionWindow() {
+        
+    	selectFrame = new JFrame("Selection Window");
+    	initFrame(selectFrame, LOGIN_WIDTH, LOGIN_HEIGHT, "Selection Window");
+    	initLayeredPane(layeredPane, LOGIN_WIDTH, LOGIN_HEIGHT);
+    	
+        selectFrame.setContentPane(layeredPane);
+        simObj.displayBG(layeredPane);
+
+        initTitle();
+        initLayout();
+        layeredPane.add(buttonPanel, Integer.valueOf(2));
+
+        setupButtonListeners();
+        selectFrame.setVisible(true);
+    }
+
+    private void initTitle() {
+    	loginTitleLabel = new JLabel("ISS SIM");
+        loginTitleLabel.setForeground(Color.WHITE);
+        loginTitleLabel.setBounds(125, 10, 80, 25);
+        layeredPane.add(loginTitleLabel, Integer.valueOf(2));
+    }
+    
+    public void initLayeredPane(JLayeredPane pane, int width, int height) {
+    	pane = new JLayeredPane();
+        pane.setBounds(0, 0, width, height);
+    }
+    
+    public void initFrame(JFrame frame, int width, int height, String title) {
+    	
+    	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	frame.setSize(width, height);
+    	frame.setLocationRelativeTo(null);
+        frame.setResizable(false);
+        frame.setIconImage(simObj.rocketIcon.getImage());
+    }
+    
+    
+    private void initLayout() {
+    	buttonPanel = new JPanel();
+        buttonPanel.setBounds((LOGIN_WIDTH - PANEL_WIDTH) / 2, (LOGIN_HEIGHT - PANEL_HEIGHT) / 2, PANEL_WIDTH, PANEL_HEIGHT);
+
+    	createUserButton = new JButton("Create User");
+        loginButton = new JButton("Login");
+        cancelButton = new JButton("Cancel");
+        
+        GroupLayout gLayout = new GroupLayout(buttonPanel);
+        buttonPanel.setLayout(gLayout);
+        buttonPanel.setOpaque(false);
+
+        gLayout.setAutoCreateGaps(true);
+        gLayout.setAutoCreateContainerGaps(true);
+
+        gLayout.setHorizontalGroup(
+            gLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addComponent(createUserButton)
+                .addComponent(loginButton)
+                .addComponent(cancelButton)
+        );
+
+        gLayout.setVerticalGroup(
+            gLayout.createSequentialGroup()
+                .addComponent(createUserButton)
+                .addComponent(loginButton)
+                .addComponent(cancelButton)
+        );
+    }
+
+    private void setupButtonListeners() {
+        ActionListener buttonListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Object o = ae.getSource();
+                
+                if (o == createUserButton) {
+                    handleCreateUser();
+                } else if (o == loginButton) {
+                    handleLoginUser();
+                } else if (o == cancelButton) {
+                    handleCancel();
+                }
+            }
+        };
+
+        createUserButton.addActionListener(buttonListener);
+        loginButton.addActionListener(buttonListener);
+        cancelButton.addActionListener(buttonListener);
+    }
+
+    private void handleCreateUser() {
+        System.out.println("Create Button");
+        UserCreationWindow userCreation = new UserCreationWindow();
+        try {
+            userCreation.openCreateWindow();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        selectFrame.dispose();
+    }
+
+    private void handleLoginUser() {
+        System.out.println("Login Button");
+        LoginUserWindow login = new LoginUserWindow();
+        try {
+            login.openLoginWindow();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        selectFrame.dispose();
+    }
+
+    private void handleCancel() {
+        System.out.println("Cancel Button");
+        selectFrame.dispose();
+    }
+}
+

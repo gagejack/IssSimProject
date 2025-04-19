@@ -1,0 +1,74 @@
+package mainPackage;
+
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+import java.io.IOException;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+
+
+public class StatsWindow {
+
+	private static final int STATS_WIDTH = 400;
+	private static final int STATS_HEIGHT = 500;
+	private static final int PANEL_WIDTH = 100;
+	private static final int PANEL_HEIGHT = 150;
+	private int screenHeight = java.awt.Toolkit.getDefaultToolkit().getScreenSize().height;
+	private int screenWidth = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
+
+	private JFrame statsFrame;	
+	
+	private SimWindow Sim = new SimWindow();
+	
+	private int windowY = (screenHeight - STATS_HEIGHT) / 2;
+	private int windowX = ((screenWidth - Sim.getSimWidth() / 2) - STATS_WIDTH);
+
+	JLayeredPane layeredPane;
+	JPanel panel;
+	JLabel xOffsetLabel, yOffsetLabel, distanceLabel;
+	
+	private int distance, xOffset, yOffset;
+	
+	
+public void openStatsWindow() throws IOException {
+		
+		initFrame(STATS_WIDTH, STATS_HEIGHT / 2);
+		initLayout();	
+		statsFrame.setVisible(true);
+		statsFrame.setResizable(false);
+		SimWindow Sim = new SimWindow();
+	}
+
+private void initFrame(int width, int height) {
+	statsFrame = new JFrame();
+	statsFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	statsFrame.setSize(width,height);
+	statsFrame.setLocation(windowX, windowY);
+}
+
+private void initLayout() {
+	panel = new JPanel(new GridBagLayout());
+	    
+	GridBagConstraints gbc = new GridBagConstraints();
+	
+	gbc.insets = new Insets(5, 5, 5, 5); // Padding
+	gbc.fill = GridBagConstraints.HORIZONTAL;
+
+	// Layout for up
+    gbc.gridx = 1;
+    gbc.gridy = 0;
+    gbc.weightx = 0; 
+    gbc.gridheight = 1;
+	
+	panel.setOpaque(false);
+	panel.setBounds((STATS_WIDTH - PANEL_WIDTH) / 2, STATS_HEIGHT / 2 / 2, PANEL_WIDTH, PANEL_HEIGHT);
+	statsFrame.add(panel);
+
+}
+	
+}

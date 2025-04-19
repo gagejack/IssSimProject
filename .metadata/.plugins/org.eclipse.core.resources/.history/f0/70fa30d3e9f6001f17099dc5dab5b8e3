@@ -1,0 +1,125 @@
+package mainPackage;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JPanel;
+
+public class SelectionWindow {
+
+    SimWindow simObj = new SimWindow();
+    
+    private int loginWidth = 300;
+    private int loginHeight = 250;
+
+    private JLabel loginTitleLabel;
+    private JButton createUserButton;
+    private JButton loginButton;
+    private JButton cancelButton;
+
+    private JFrame selectFrame;
+    private JLayeredPane selectLayeredPane = new JLayeredPane();
+    private JPanel buttonPanel = new JPanel(); // Panel for buttons
+
+    public void openSelectionWindow() {
+        selectFrame = new JFrame("Docking Simulator");
+        selectFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        selectFrame.setSize(loginWidth, loginHeight);
+        selectFrame.setLocationRelativeTo(null);
+        selectFrame.setResizable(false);
+        selectFrame.setIconImage(simObj.rocketIcon.getImage());
+
+        selectLayeredPane.setBounds(0, 0, loginWidth, loginHeight);
+        selectFrame.setContentPane(selectLayeredPane);
+        simObj.displayBG(selectLayeredPane);
+
+        // Title Label
+        loginTitleLabel = new JLabel("ISS SIM");
+        loginTitleLabel.setForeground(Color.WHITE);
+        loginTitleLabel.setBounds(125, 10, 80, 25);
+        selectLayeredPane.add(loginTitleLabel, Integer.valueOf(2));
+
+        // Create Buttons
+        createUserButton = new JButton("Create User");
+        loginButton = new JButton("Login");
+        cancelButton = new JButton("Cancel");
+
+        // Initialize layout for buttons
+        initLayout();
+
+        // Add button panel to layered pane
+        buttonPanel.setBounds(50, 100, 200, 120); // Adjust position and size
+        selectLayeredPane.add(buttonPanel, Integer.valueOf(2));
+
+        setupButtonListeners();
+        selectFrame.setVisible(true);
+    }
+
+    private void initLayout() {
+        GroupLayout gLayout = new GroupLayout(buttonPanel);
+        buttonPanel.setLayout(gLayout);
+
+        gLayout.setAutoCreateGaps(true);
+        gLayout.setAutoCreateContainerGaps(true);
+
+        // Horizontal Group
+        gLayout.setHorizontalGroup(
+            gLayout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addComponent(createUserButton)
+                .addComponent(loginButton)
+                .addComponent(cancelButton)
+        );
+
+        // Vertical Group
+        gLayout.setVerticalGroup(
+            gLayout.createSequentialGroup()
+                .addComponent(createUserButton)
+                .addComponent(loginButton)
+                .addComponent(cancelButton)
+        );
+    }
+
+    private void setupButtonListeners() {
+        ActionListener buttonListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                Object o = ae.getSource();
+                
+                if (o == createUserButton) {
+                    System.out.println("Create Button");
+                    UserCreationWindow userCreation = new UserCreationWindow();
+                    try {
+                        userCreation.openCreateWindow();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    selectFrame.dispose();
+
+                } else if (o == loginButton) {
+                    System.out.println("Login Button");
+                    LoginUserWindow login = new LoginUserWindow();
+                    try {
+                        login.openLoginWindow();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    selectFrame.dispose();
+                } else if (o == cancelButton) {
+                    System.out.println("Cancel Button");
+                    selectFrame.dispose();
+                }
+            }
+        };
+
+        createUserButton.addActionListener(buttonListener);
+        loginButton.addActionListener(buttonListener);
+        cancelButton.addActionListener(buttonListener);
+    }
+}

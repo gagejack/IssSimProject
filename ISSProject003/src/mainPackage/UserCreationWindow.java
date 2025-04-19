@@ -1,6 +1,9 @@
 package mainPackage;
 
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
@@ -10,36 +13,24 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 public class UserCreationWindow {
 	
-	SimWindow guiObj = new SimWindow();
-	SelectionWindow selectObj = new SelectionWindow();
-	LoginUserWindow loginObj= new LoginUserWindow();
+	SimWindow Sim = new SimWindow();
+	SelectionWindow Select = new SelectionWindow();
+	LoginUserWindow Login= new LoginUserWindow();
 
 	private JFrame createFrame;
 	private JLayeredPane createLayeredPane;
 	
-	private int createWidth = 400;
-	private int createHeight = 275;
-	private int createButtonX = 75;
-	private int createButtonY = 190;
-	
-	private int backButtonX = 250;
-	private int backButtonY = 190;
-	private int backButtonWidth = 75;
-	private int backButtonHeight = 25;
-	
-	private int userTextFieldX = 50;
-	private int userTextFieldY = 50+ 20;
-	private int passTextFieldX = 50;
-	private int passTextFieldY = 120+ 20;
-	private int userLabelX = 50;
-	private int userLabelY = 20 + 20;
-	private int passwordLabelX = 50;
-	private int passwordLabelY = 90+ 20;
+	private static final int CREATE_WIDTH = 250;
+    private static final int CREATE_HEIGHT = 200;
+    
+    private static final int PANEL_WIDTH = 200;
+    private static final int PANEL_HEIGHT = 200;
 	
 	private JLabel userLabel;
 	private JTextField userText;
@@ -49,51 +40,102 @@ public class UserCreationWindow {
 	
 	private JButton createUserButton = new JButton();
 	private JButton backButton = new JButton();
+	private JPanel panel = new JPanel();
 	
-	public void openCreateWindow() throws IOException {
-		createFrame = new JFrame("Create User");
-		createFrame.setSize(createWidth,createHeight);
-		createFrame.setLocationRelativeTo(null);
-		createFrame.setLayout(null);
+	public void openCreateWindow() throws IOException { 
+
+		createFrame = new JFrame();
+		initFrame(CREATE_WIDTH, CREATE_HEIGHT, "Create User Window");
+		initLayeredPane(CREATE_WIDTH, CREATE_HEIGHT);
+		Sim.displayBG(createLayeredPane, CREATE_WIDTH, CREATE_HEIGHT);
+		initLayout();
+		setupButtonListeners();
 		
+		
+		}
+	
+	private void initLayeredPane(int width, int height) {
 		createLayeredPane = new JLayeredPane();
-		createLayeredPane.setBounds(0, 0, createWidth, createHeight);
-		createFrame.add(createLayeredPane);
+		createLayeredPane.setBounds(0, 0, width, height);
+		createFrame.setContentPane(createLayeredPane);
 		createFrame.setResizable(false);
-		createFrame.setVisible(true);
+		createFrame.setVisible(true);		
+	}
+
+	private void initFrame(int width, int height, String title) {
+		createFrame = new JFrame(title);
+		createFrame.setSize(width,height);
+		createFrame.setLocationRelativeTo(null);
+		createFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+	}
+	
+	private void initLayout() {
+		panel = new JPanel(new GridBagLayout());
+		
+		createUserButton = new JButton("Create");
+		backButton = new JButton("Back");
 		
 		setupUserStuff();
 		setupPassStuff();
+		    
+		GridBagConstraints gbc = new GridBagConstraints();
 		
+		gbc.insets = new Insets(5, 5, 5, 5); // Padding
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+
+		// Layout for username
+	    gbc.gridx = 0;
+	    gbc.gridy = 0;
+	    gbc.weightx = 0.3; // Allows resizing
+	    panel.add(userLabel, gbc);
+
+	    gbc.gridx = 1;
+	    gbc.gridy = 0;
+	    gbc.weightx = 0.7; // Allows text field to expand
+	    gbc.gridwidth = 2; // Text field spans more columns
+	    panel.add(userText, gbc);
+
+	    // Layout for password
+	    gbc.gridx = 0;
+	    gbc.gridy = 1;
+	    gbc.gridwidth = 1;
+	    gbc.weightx = 0.3;
+	    panel.add(passLabel, gbc);
+
+	    gbc.gridx = 1;
+	    gbc.gridy = 1;
+	    gbc.weightx = 0.7;
+	    gbc.gridwidth = 2;
+	    panel.add(passText, gbc);
+
+	    // Login Button
+	    gbc.gridwidth = 1;
+	    gbc.weightx = 0.5;
+	    gbc.gridx = 0;
+	    gbc.gridy = 2;
+	    panel.add(createUserButton, gbc);
+
+	    // Back Button
+	    gbc.gridx = 1;
+	    panel.add(backButton, gbc);
 		
-		guiObj.displayBG(createLayeredPane);
-	        
-		initializeCreateUserButton();
-		initializeBackButton();
-		
-		setupButtonListeners();
-		}
+		panel.setOpaque(false);
+		panel.setBounds((CREATE_WIDTH - PANEL_WIDTH) / 2, (CREATE_HEIGHT - PANEL_HEIGHT) / 2, PANEL_WIDTH, PANEL_HEIGHT);
+		createLayeredPane.add(panel, Integer.valueOf(2));
+
+	}
 	
 	public void setupUserStuff() {
 		userLabel = new JLabel("Username: ");
         userLabel.setForeground(Color.WHITE);
-        userLabel.setBounds(userLabelX,userLabelY,80,25);
-        createLayeredPane.add(userLabel, Integer.valueOf(2));
-        
 		userText = new JTextField();
-	    userText.setBounds(userTextFieldX,userTextFieldY,200,25);
-	    createLayeredPane.add(userText,Integer.valueOf(2));
 	}
 	
 	public void setupPassStuff() {
 		passLabel = new JLabel("Password: ");
         passLabel.setForeground(Color.WHITE);
-        passLabel.setBounds(passwordLabelX,passwordLabelY,80,25);
-        createLayeredPane.add(passLabel,Integer.valueOf(2));
-        
 		passText = new JPasswordField();
-        passText.setBounds(passTextFieldX,passTextFieldY,200,25);
-        createLayeredPane.add(passText,Integer.valueOf(2));
 	}
 	
 	public void setupButtonListeners() {
@@ -112,7 +154,7 @@ public class UserCreationWindow {
 	    				userInfo.saveUser(user, pass);
 	    				createFrame.dispose();
 						try {
-							loginObj.openLoginWindow();
+							Login.openLoginWindow();
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -128,24 +170,12 @@ public class UserCreationWindow {
 	                
 				} else if(o == backButton) {
 					createFrame.dispose();
-					selectObj.openSelectionWindow();
+					Select.openSelectionWindow();
 				}
 			}
 		};
 		
 		createUserButton.addActionListener(buttonListener);
 		backButton.addActionListener(buttonListener);
-	}
-	
-	public void initializeCreateUserButton() {
-		createUserButton = new JButton("Create User");
-        createUserButton.setBounds(createButtonX, createButtonY, 150, 25);
-        createLayeredPane.add(createUserButton,Integer.valueOf(2));
-	}
-	
-	public void initializeBackButton() {
-		backButton = new JButton("Back");
-        backButton.setBounds(backButtonX, backButtonY, backButtonWidth, backButtonHeight);
-        createLayeredPane.add(backButton,Integer.valueOf(2));
 	}
 }
